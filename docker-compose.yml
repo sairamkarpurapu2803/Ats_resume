@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  ats-resume-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ats-resume-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+      - ./exports:/app/exports
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
